@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Reports{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4 class="mb-0">Reports</h4>
+  <a href="{{ url_for('reports.download_pdf') }}" class="btn btn-primary btn-sm">Download Full PDF Report</a>
+</div>
+<div class="panel">
+  <h6 class="mb-3">Visual Reports</h6>
+  <div class="row g-3">
+    <div class="col-md-6"><img src="{{ url_for('reports.chart_png', chart_name='attendance_trend') }}" class="img-fluid rounded border"></div>
+    <div class="col-md-6"><img src="{{ url_for('reports.chart_png', chart_name='risk_distribution') }}" class="img-fluid rounded border"></div>
+    <div class="col-md-6"><img src="{{ url_for('reports.chart_png', chart_name='attendance_by_subject') }}" class="img-fluid rounded border"></div>
+    <div class="col-md-6"><img src="{{ url_for('reports.chart_png', chart_name='feature_importance') }}" class="img-fluid rounded border"></div>
+  </div>
+</div>
+<div class="panel">
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <h6 class="mb-0">At-Risk Students</h6>
+    <a href="{{ url_for('reports.export_at_risk_csv') }}" class="btn btn-sm btn-outline-primary">Export CSV</a>
+  </div>
+  <table class="table table-sm">
+    <thead><tr><th>Student ID</th><th>Name</th><th>Predicted Score</th><th>Risk</th><th>Predicted On</th></tr></thead>
+    <tbody>
+      {% for r in at_risk %}
+      <tr><td>{{ r['student_id'] }}</td><td>{{ r['name'] }}</td><td>{{ r['predicted_score'] }}</td><td><span class="badge {{ 'badge-risk-medium' if r['risk_level']=='Medium' else 'badge-risk-high' }}">{{ r['risk_level'] }}</span></td><td>{{ r['created_at'] }}</td></tr>
+      {% else %}<tr><td colspan="5" class="text-muted text-center py-3">No at-risk students yet.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
